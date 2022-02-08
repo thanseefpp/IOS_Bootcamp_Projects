@@ -8,27 +8,27 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculateViewController: UIViewController {
+    
+    var calculatorBrain = CalculatorBrain()
     
     @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var weightLabel: UILabel!
-    
     @IBOutlet weak var heightSlider: UISlider!
-    
     @IBOutlet weak var weightSlider: UISlider!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     @IBAction func heightSlider(_ sender: UISlider) {
-//        print(String(format: "%.2f", sender.value))
+        //        print(String(format: "%.2f", sender.value))
         let height = String(format: "%.2f", sender.value)
         heightLabel.text = ("\(height)m")
     }
     
     @IBAction func weightSlider(_ sender: UISlider) {
-//        print(Int(sender.value))
+        //        print(Int(sender.value))
         let weight = Int(sender.value)
         weightLabel.text = ("\(weight)kg")
     }
@@ -37,9 +37,21 @@ class ViewController: UIViewController {
         let heightValue = heightSlider.value
         let weightValue = weightSlider.value
         
-//        let bmi = weightValue / (heightValue*heightValue) // this one also a possible method to find bmi
-        let bmi = weightValue / pow(heightValue, 2) // swift method to find power of a value
-        print(bmi)
+        //        let bmi = weightValue / (heightValue*heightValue) // this one also a possible method to find bmi
+        
+        
+        calculatorBrain.calculateBMI(height: heightValue, weight: weightValue)
+        
+        performSegue(withIdentifier: "goToResult", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToResult"{
+            let destinationVC = segue.destination as! ResultViewController
+            destinationVC.bmiValue = calculatorBrain.getBMI()
+            destinationVC.advise = calculatorBrain.getAdvise()
+            destinationVC.colorPlate = calculatorBrain.getColor()
+        }
     }
     
     
